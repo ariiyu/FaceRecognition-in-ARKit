@@ -21,7 +21,7 @@ public extension SCNNode {
         // BUBBLE-TEXT
         let bubble = SCNText(string: text, extrusionDepth: CGFloat(bubbleDepth))
         bubble.font = UIFont(name: "Futura", size: 0.18)?.withTraits(traits: .traitBold)
-        bubble.alignmentMode = kCAAlignmentCenter
+        bubble.alignmentMode = CATextLayerAlignmentMode.center.rawValue
         bubble.firstMaterial?.diffuse.contents = UIColor.orange
         bubble.firstMaterial?.specular.contents = UIColor.white
         bubble.firstMaterial?.isDoubleSided = true
@@ -63,7 +63,7 @@ public extension SCNNode {
     func move(_ position: SCNVector3)  {
         SCNTransaction.begin()
         SCNTransaction.animationDuration = 0.4
-        SCNTransaction.animationTimingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)
+        SCNTransaction.animationTimingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.linear)
         self.position = position
         opacity = 1
         SCNTransaction.commit()
@@ -72,7 +72,7 @@ public extension SCNNode {
     func hide()  {
         SCNTransaction.begin()
         SCNTransaction.animationDuration = 2.0
-        SCNTransaction.animationTimingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)
+        SCNTransaction.animationTimingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.linear)
         opacity = 0
         SCNTransaction.commit()
     }
@@ -81,7 +81,7 @@ public extension SCNNode {
         opacity = 0
         SCNTransaction.begin()
         SCNTransaction.animationDuration = 0.4
-        SCNTransaction.animationTimingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)
+        SCNTransaction.animationTimingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.linear)
         opacity = 1
         SCNTransaction.commit()
     }
@@ -89,8 +89,8 @@ public extension SCNNode {
 
 private extension UIFont {
     // Based on: https://stackoverflow.com/questions/4713236/how-do-i-set-bold-and-italic-on-uilabel-of-iphone-ipad
-    func withTraits(traits:UIFontDescriptorSymbolicTraits...) -> UIFont {
-        let descriptor = self.fontDescriptor.withSymbolicTraits(UIFontDescriptorSymbolicTraits(traits))
+    func withTraits(traits:UIFontDescriptor.SymbolicTraits...) -> UIFont {
+        let descriptor = self.fontDescriptor.withSymbolicTraits(UIFontDescriptor.SymbolicTraits(traits))
         return UIFont(descriptor: descriptor!, size: 0)
     }
 }

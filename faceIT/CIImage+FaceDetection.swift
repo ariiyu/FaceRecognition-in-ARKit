@@ -17,7 +17,7 @@ public extension CIImage {
             return self.oriented(UIDevice.current.orientation.cameraOrientation())
         }
     }
-
+    
     /// Cropping the image containing the face.
     ///
     /// - Parameter toFace: the face to extract
@@ -32,7 +32,7 @@ public extension CIImage {
         let rect = CGRect(x: x, y: y, width: width, height: height)
         
         let increasedRect = rect.insetBy(dx: width * -percentage, dy: height * -percentage)
-        return self.cropping(to: increasedRect)
+        return self.cropped(to: increasedRect)
     }
 }
 
