@@ -70,7 +70,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-
+        
         switch camera.trackingState {
         case .limited(.initializing):
             PKHUD.sharedHUD.contentView = PKHUDProgressView(title: "Initializing", subtitle: nil)
@@ -100,11 +100,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             
             // Verify tracking state and abort
-//            guard case .normal = frame.camera.trackingState else {
-//                print("Tracking not available: \(frame.camera.trackingState)")
-//                observer.onCompleted()
-//                return Disposables.create()
-//            }
+            //            guard case .normal = frame.camera.trackingState else {
+            //                print("Tracking not available: \(frame.camera.trackingState)")
+            //                observer.onCompleted()
+            //                return Disposables.create()
+            //            }
             
             // Create and rotate image
             let image = CIImage.init(cvPixelBuffer: frame.capturedImage).rotate
@@ -161,7 +161,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     return
                 }
                 
-                observer.onNext(classes: classifications, position: worldCoord, frame: frame)
+                observer.onNext((classes: classifications, position: worldCoord, frame: frame))
                 observer.onCompleted()
             })
             request.imageCropAndScaleOption = .scaleFit
@@ -235,7 +235,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
         }
     }
-
+    
     /// In order to get stable vectors, we determine multiple coordinates within an interval.
     ///
     /// - Parameters:
@@ -250,7 +250,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             }
             usleep(12000) // .012 seconds
         }
-
+        
         if array.isEmpty {
             return nil
         }
@@ -268,7 +268,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Filter results that are to close
         if let closestResult = arHitTestResults.filter({ $0.distance > 0.10 }).first {
-//            print("vector distance: \(closestResult.distance)")
+            //            print("vector distance: \(closestResult.distance)")
             return SCNVector3.positionFromTransform(closestResult.worldTransform)
         }
         return nil

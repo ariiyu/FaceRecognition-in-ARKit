@@ -6,9 +6,9 @@ target 'faceIT' do
   use_frameworks!
 
   # Pods for faceIT
-  pod 'RxSwift',    '~> 3.0'
-  pod 'RxCocoa',    '~> 3.0'
+  pod 'RxSwift',    '~> 5.0'
+  pod 'RxCocoa',    '~> 5.0'
   pod 'AsyncSwift', '~> 2.0'
-  pod 'PKHUD',      '~> 4.0'
+  pod 'PKHUD',      '~> 5.0'
 
 end
