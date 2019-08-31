@@ -15,7 +15,6 @@
 		2EBDC71C1F0FC72F00243609 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2EBDC71A1F0FC72F00243609 /* LaunchScreen.storyboard */; };
 		2EC9AD451F45DA5300784281 /* SCNVector3+Distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC9AD441F45DA5300784281 /* SCNVector3+Distance.swift */; };
 		2EC9AD471F46EA1300784281 /* SCNNode+Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC9AD461F46EA1300784281 /* SCNNode+Text.swift */; };
-		2EDA02C91F58AE920026EC75 /* faces_model.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 2EDA02C81F58AE8B0026EC75 /* faces_model.mlmodel */; };
 		E67BA293D563E2B1B6C08603 /* Pods_faceIT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3651E17980590E279CE601DE /* Pods_faceIT.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +30,6 @@
 		2EBDC71D1F0FC72F00243609 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EC9AD441F45DA5300784281 /* SCNVector3+Distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector3+Distance.swift"; sourceTree = "<group>"; };
 		2EC9AD461F46EA1300784281 /* SCNNode+Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNNode+Text.swift"; sourceTree = "<group>"; };
-		2EDA02C81F58AE8B0026EC75 /* faces_model.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = faces_model.mlmodel; sourceTree = SOURCE_ROOT; };
 		3651E17980590E279CE601DE /* Pods_faceIT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_faceIT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BA678741ACBFB3E5F4568CA /* Pods-faceIT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-faceIT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-faceIT/Pods-faceIT.debug.xcconfig"; sourceTree = "<group>"; };
 		94ABA2E7D430381D56094BD1 /* Pods_faceITUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_faceITUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,7 +88,6 @@
 		2EBDC70E1F0FC72F00243609 /* faceIT */ = {
 			isa = PBXGroup;
 			children = (
-				2EDA02C81F58AE8B0026EC75 /* faces_model.mlmodel */,
 				2EBDC70F1F0FC72F00243609 /* AppDelegate.swift */,
 				2EBDC7131F0FC72F00243609 /* ViewController.swift */,
 				2EBDC7151F0FC72F00243609 /* Main.storyboard */,
@@ -229,7 +226,6 @@
 				2EC9AD471F46EA1300784281 /* SCNNode+Text.swift in Sources */,
 				2EBDC7141F0FC72F00243609 /* ViewController.swift in Sources */,
 				2E5C6C421F2F825900749336 /* CIImage+FaceDetection.swift in Sources */,
-				2EDA02C91F58AE920026EC75 /* faces_model.mlmodel in Sources */,
 				2EBDC7101F0FC72F00243609 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

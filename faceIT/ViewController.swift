@@ -26,8 +26,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     var bounds: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
     
-    let model: VNCoreMLModel = try! VNCoreMLModel(for: faces_model().model)
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,13 +46,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             .subscribeOn(SerialDispatchQueueScheduler(qos: .background))
             .concatMap{ _ in  self.faceObservation() }
             .flatMap{ Observable.from($0)}
-            .flatMap{ self.faceClassification(face: $0.observation, image: $0.image, frame: $0.frame) }
+            .flatMap{ self.handleFaceLandmarks(face: $0.observation, image: $0.image, frame: $0.frame) }
             .subscribe { [unowned self] event in
                 guard let element = event.element else {
                     print("No element available")
                     return
                 }
-                self.updateNode(classes: element.classes, position: element.position, frame: element.frame)
+                self.updateNode(position: element.position, frame: element.frame)
             }.disposed(by: 👜)
         
         
@@ -136,39 +134,54 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    private func faceClassification(face: VNFaceObservation, image: CIImage, frame: ARFrame) -> Observable<(classes: [VNClassificationObservation], position: SCNVector3, frame: ARFrame)> {
-        return Observable<(classes: [VNClassificationObservation], position: SCNVector3, frame: ARFrame)>.create{ observer in
-            
-            // Determine position of the face
-            let boundingBox = self.transformBoundingBox(face.boundingBox)
-            guard let worldCoord = self.normalizeWorldCoord(boundingBox) else {
-                print("No feature point found")
-                observer.onCompleted()
-                return Disposables.create()
-            }
-            
-            // Create Classification request
-            let request = VNCoreMLRequest(model: self.model, completionHandler: { request, error in
+    private func handleFaceLandmarks(face: VNFaceObservation, image: CIImage, frame: ARFrame) -> Observable<(position: SCNVector3, frame: ARFrame)> {
+        return Observable<(position: SCNVector3, frame: ARFrame)>.create{ observer in
+            // Create face landmarks detection request
+            let request = VNDetectFaceLandmarksRequest { (request, error) in
                 guard error == nil else {
                     print("ML request error: \(error!.localizedDescription)")
                     observer.onCompleted()
                     return
                 }
                 
-                guard let classifications = request.results as? [VNClassificationObservation] else {
-                    print("No classifications")
+                if let results = request.results as? [VNFaceObservation] {
+                    for faceObservation in results {
+                        guard let landmarks = faceObservation.landmarks else {
+                            continue
+                        }
+                        guard let innerLips = landmarks.innerLips else {
+                            continue
+                        }
+                        print(innerLips.normalizedPoints)
+                        let xs = innerLips.normalizedPoints.map{ $0.x }
+                        let ys = innerLips.normalizedPoints.map{ $0.y }
+                        let minX = xs.min() ?? 0
+                        let minY = ys.min() ?? 0
+                        let maxX = xs.max() ?? 0
+                        let maxY = ys.max() ?? 0
+                        let lipsRect = CGRect(x: minX,
+                                              y: minY,
+                                              width: maxX - minX,
+                                              height: maxY - minY)
+                        print(lipsRect)
+                        let points = self.transformBoundingBox(lipsRect)
+                        guard let worldCoord = self.normalizeWorldCoord(points) else {
+                            print("No feature point found")
+                            observer.onCompleted()
+                            return
+                        }
+                        observer.onNext((position: worldCoord, frame: frame))
+                        observer.onCompleted()
+                    }
+                } else {
+                    print("No observations")
                     observer.onCompleted()
                     return
                 }
-                
-                observer.onNext((classes: classifications, position: worldCoord, frame: frame))
-                observer.onCompleted()
-            })
-            request.imageCropAndScaleOption = .scaleFit
+            }
             
             do {
-                let pixel = image.cropImage(toFace: face)
-                try VNImageRequestHandler(ciImage: pixel, options: [:]).perform([request])
+                try VNImageRequestHandler(ciImage: image, options: [:]).perform([request])
             } catch {
                 print("ML request handler error: \(error.localizedDescription)")
                 observer.onCompleted()
@@ -177,27 +190,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         }
     }
     
-    private func updateNode(classes: [VNClassificationObservation], position: SCNVector3, frame: ARFrame) {
-        
-        guard let person = classes.first else {
-            print("No classification found")
-            return
-        }
-        
-        let second = classes[1]
-        let name = person.identifier
-        print("""
-            FIRST
-            confidence: \(person.confidence) for \(person.identifier)
-            SECOND
-            confidence: \(second.confidence) for \(second.identifier)
-            
-            """)
-        if person.confidence < 0.60 || person.identifier == "unknown" {
-            print("not so sure")
-            return
-        }
-        
+    private func updateNode(position: SCNVector3, frame: ARFrame) {
+        let name = "innerLips"
         // Filter for existent face
         let results = self.faces.filter{ $0.name == name && $0.timestamp != frame.timestamp }
             .sorted{ $0.node.position.distance(toVector: position) < $1.node.position.distance(toVector: position) }
